@@ -15,7 +15,7 @@ class PostController extends Controller
     }
 
     public function read(Request $request, Post $post) {
-        if ($request->input('edit') == true) {
+        if ($request->input('edit') == 'true') {
             return view('posts/edit', ['post' => $post]);
         } else {
             return view('posts/read', ['post' => $post]);
