@@ -59,6 +59,12 @@
                             {{$post->content}}
                         </div>
                     </div>
+
+                    <div class="ml-12">
+                        <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                            <h4>Author: {{$post->user->name}} ({{$post->user->email}})</h4>
+                        </div>
+                    </div>
                 </div>
             </div>
             @endforeach

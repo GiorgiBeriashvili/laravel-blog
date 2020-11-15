@@ -8,6 +8,11 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-8">
+            {{--        @if($errors->any())--}}
+            {{--            @foreach($errors->all() as $error)--}}
+            {{--                <li>{{ $error }}</li>--}}
+            {{--            @endforeach--}}
+            {{--        @endif--}}
             <form method="post" enctype="multipart/form-data" action="{{route('posts.update', $post->id)}}">
                 @csrf
                 @method('PUT')

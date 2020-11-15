@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,18 +15,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function () { return view('home'); })->name('home');
+
+Route::get('/register', [AuthenticationController::class, 'register'])->name('register');
+Route::post('/register', [AuthenticationController::class, 'postRegister'])->name('post_register');
+Route::get('/login', [AuthenticationController::class, 'login'])->name('login');
+Route::post('/login', [AuthenticationController::class, 'postLogin'])->name('post_login');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/posts', [PostController::class, 'index'])->name('posts');
+    Route::get('/my_posts', [PostController::class, 'myPosts'])->name('my_posts');
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/posts/save', [PostController::class, 'save'])->name('posts.save');
+    Route::get('/posts/{post}', [PostController::class, 'read'])->name('posts.read');
+    Route::put('/posts/{post}/update', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{post}/delete', [PostController::class, 'delete'])->name('posts.delete');
+
+    Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 });
 
-Route::get('/posts', [PostController::class, 'index'])->name('posts');
-
-Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-
-Route::post('/posts/save', [PostController::class, 'save'])->name('posts.save');
-
-Route::get('/posts/{post}', [PostController::class, 'read'])->name('posts.read');
-
-Route::put('/posts/{post}/update', [PostController::class, 'update'])->name('posts.update');
-
-Route::delete('/posts/{post}/delete', [PostController::class, 'delete'])->name('posts.delete');
