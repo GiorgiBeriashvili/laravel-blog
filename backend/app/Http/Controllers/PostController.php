@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SavePostRequest;
 use App\Models\Post;
+use App\Models\Tag;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -14,25 +15,30 @@ class PostController extends Controller
     public function index() {
         $posts = Post::all();
 
-        return view('posts/index', ['posts' => $posts]);
+        return view('posts/index', compact('posts'));
     }
 
     public function myPosts() {
         $posts = Post::all()->where('user_id', Auth::id());
+        $author = Auth::user();
 
-        return view('posts/my_posts', ['posts' => $posts, 'author' => User::all()->find(Auth::id())]);
+        return view('posts/my_posts', compact('posts', 'author'));
     }
 
     public function read(Request $request, Post $post) {
         if ($request->input('edit') == 'true') {
-            return view('posts/edit', ['post' => $post]);
+            $tags = Tag::all();
+
+            return view('posts/edit', compact('post', 'tags'));
         } else {
-            return view('posts/read', ['post' => $post]);
+            return view('posts/read', compact('post'));
         }
     }
 
     public function create() {
-        return view('posts/create');
+        $tags = Tag::all();
+
+        return view('posts/create', compact('tags'));
     }
 
     public function save(SavePostRequest $request) {
@@ -42,11 +48,17 @@ class PostController extends Controller
 
         $post->save();
 
+        $post->tags()->attach($request->tags);
+
         return redirect()->route('posts.read', $post);
     }
 
     public function update(Request $request, Post $post) {
         $post->update($request->all());
+
+        $post->tags()->detach($post->tags->pluck('id'));
+
+        $post->tags()->attach($request->tags);
 
         return redirect()->route('posts.read', $post);
     }

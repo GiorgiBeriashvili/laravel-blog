@@ -35,6 +35,14 @@
                             <input type="text" class="form-control"  placeholder="Likes" name="likes" value="{{old('likes', $post->likes)}}">
                         </label>
                     </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Tags</label>
+                        <select name="tags[]" id="" multiple>
+                            @foreach($tags as $tag)
+                                <option value="{{ $tag->id }}" @if(in_array($tag->id, $post->tags->pluck('id')->toArray())) selected @endif>{{ $tag->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <input type="hidden" name="_token"  id='csrf_toKen' value="{{ csrf_toKen() }}">
                 <div class="box-footer">

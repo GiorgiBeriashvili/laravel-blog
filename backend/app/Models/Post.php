@@ -26,4 +26,11 @@ class Post extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the tags that are associated with the post.
+     */
+    public function tags() {
+        return $this->belongsToMany(Tag::class);
+    }
 }
