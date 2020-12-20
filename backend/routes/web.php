@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +30,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts/save', [PostController::class, 'save'])->name('posts.save');
     Route::get('/posts/{post}', [PostController::class, 'read'])->name('posts.read');
     Route::put('/posts/{post}/update', [PostController::class, 'update'])->name('posts.update');
+    Route::patch('/posts/{post}/approve', [PostController::class, 'approve'])->name('posts.approve');
     Route::delete('/posts/{post}/delete', [PostController::class, 'delete'])->name('posts.delete');
+
+
+    Route::get('/mail/create', [MailController::class, 'create'])->name('mail.create');
+    Route::post('/mail/send', [MailController::class, 'send'])->name('mail.send');
 
     Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 });

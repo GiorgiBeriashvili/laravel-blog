@@ -12,6 +12,7 @@ class PostSeeder extends Seeder
      * Run the database seeds.
      *
      * @return void
+     * @throws \Exception
      */
     public function run()
     {
@@ -20,6 +21,7 @@ class PostSeeder extends Seeder
             'title' => Str::random(10),
             'content' => Str::random(50),
             'likes' => rand(0, 100 + 1),
+            'is_approved' => (boolean) random_int(0, 1),
         ]);
     }
 }

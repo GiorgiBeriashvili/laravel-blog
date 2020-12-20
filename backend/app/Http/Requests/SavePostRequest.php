@@ -27,6 +27,7 @@ class SavePostRequest extends FormRequest
             'title' => 'required|min:5',
             'content' => 'required',
             'likes' => 'required|int',
+
         ];
     }
 }

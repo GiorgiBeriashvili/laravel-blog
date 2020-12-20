@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SavePostRequest;
 use App\Models\Post;
 use App\Models\Tag;
-use App\Models\User;
+use App\Notifications\PostApproved;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,13 +13,15 @@ use Illuminate\Support\Facades\Auth;
 class PostController extends Controller
 {
     public function index() {
-        $posts = Post::all();
+        // $posts = Post::all();
+        $posts = Post::with('tags')->get();
 
         return view('posts/index', compact('posts'));
     }
 
     public function myPosts() {
-        $posts = Post::all()->where('user_id', Auth::id());
+        // $posts = Post::all()->where('user_id', Auth::id());
+        $posts = Post::with('tags')->get()->where('user_id', Auth::id());
         $author = Auth::user();
 
         return view('posts/my_posts', compact('posts', 'author'));
@@ -61,6 +63,22 @@ class PostController extends Controller
         $post->tags()->attach($request->tags);
 
         return redirect()->route('posts.read', $post);
+    }
+
+    public function approve(Post $post) {
+        if (!$post->is_approved && Auth::user()->role == 'admin') {
+            $post->update([ $post->is_approved = true, ]);
+
+            $details = [
+                'greeting' => 'Hello!',
+                'body' => 'A post got approved!',
+                'thanks' => 'Thank you!',
+            ];
+
+            Auth::user()->notify(new PostApproved($details));
+        }
+
+        response("OK", 200);
     }
 
     public function delete(Post $post) {

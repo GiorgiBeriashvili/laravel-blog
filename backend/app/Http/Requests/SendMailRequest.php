@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class RegistrationRequest extends FormRequest
+class SendMailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +24,7 @@ class RegistrationRequest extends FormRequest
     public function rules()
     {
         return [
-            'role' => ['required', Rule::in(['admin', 'blogger'])],
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:8',
+            'mail' => 'required|email',
         ];
     }
 }

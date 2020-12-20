@@ -1,11 +1,16 @@
 @extends("layout.layout")
 
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+
 @section("content")
 <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
     @if (Route::has('login'))
         <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
             @auth
-                <a href="{{ url('/home') }}" class="text-sm text-gray-700 underline">Home</a>
+                <a href="{{ url('/') }}" class="text-sm text-gray-700 underline">Home</a>
             @else
                 <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Login</a>
 
@@ -53,6 +58,12 @@
                                     <button style="background-color: transparent;" type="submit" class="fa fa-trash"></button>
                                 </form>
                             </div>
+
+                            @can('approve', $post)
+                                <div class="ml-4 text-lg leading-7 font-semibold">
+                                    <a id="approve" url="{{route('posts.approve', [$post])}}" class="@if (!$post->is_approved) fa fa-thumbs-up @else fa fa-check @endif"></a>
+                                </div>
+                            @endcan
                         </div>
 
                         <div class="ml-12">
@@ -98,3 +109,35 @@
     </div>
 </div>
 @endsection
+
+<script>
+    $(document).ready(function () {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $(document).on('click', '#approve', function (event) {
+            event.preventDefault();
+
+            const $this = $(this);
+
+            if ($this.closest('#approve').attr('class').trim() === 'fa fa-thumbs-up') {
+                $this.closest('#approve').removeClass('fa fa-thumbs-up');
+                $this.closest('#approve').addClass('fa fa-check');
+                $this.closest('#approve').css('color', 'green');
+            }
+
+            console.log($this.attr('url'))
+
+            $.ajax({
+                type: 'PATCH',
+                url: $this.attr('url'),
+                success: function (response) {
+                    console.log(response);
+                }
+            })
+        })
+    });
+</script>

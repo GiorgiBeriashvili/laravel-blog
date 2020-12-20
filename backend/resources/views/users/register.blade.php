@@ -1,6 +1,13 @@
 <form method="post" action="{{ route('post_register') }}">
     @csrf
     <div class="form-group">
+        <label>Role</label>
+        <input type="text" name="role" class="form-control">
+
+        @error('role')
+            <p class="text-danger">{{ $errors->first('role') }}</p>
+        @enderror
+
         <label>Name</label>
         <input type="text" name="name" class="form-control">
 
